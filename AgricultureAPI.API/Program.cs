@@ -28,25 +28,24 @@ builder.Services.AddScoped<IHistoryService, HistoryService>();
 // Controllers & Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+// Replace AddSwaggerGen with this simpler version that works with Swashbuckle 8:
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Agriculture API", Version = "v1" });
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    c.SwaggerDoc("v1", new() { Title = "Agriculture API", Version = "v1" });
+    c.AddSecurityDefinition("Bearer", new()
     {
         Name = "Authorization",
-        Type = SecuritySchemeType.Http,
+        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT",
-        In = ParameterLocation.Header,
+        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
         Description = "Enter your JWT token here"
     });
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    c.AddSecurityRequirement(new()
     {
         {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
-            },
+            new() { Reference = new() { Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme, Id = "Bearer" } },
             Array.Empty<string>()
         }
     });
@@ -90,7 +89,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
 app.UseCors("AllowReact");
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
